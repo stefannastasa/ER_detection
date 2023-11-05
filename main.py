@@ -13,7 +13,7 @@ def gpuConfig():
     if gpus:
         try:
             tf.config.set_logical_device_configuration(gpus[0],
-                                                       [tf.config.LogicalDeviceConfiguration(memory_limit=4096)])
+                                                       [tf.config.LogicalDeviceConfiguration(memory_limit=5126)])
             tf.config.set_visible_devices(gpus[0], 'GPU')
             logical_gpus = tf.config.list_logical_devices('GPU')
             print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
@@ -29,14 +29,14 @@ if __name__ == '__main__':
 
     model = GoogLeNet().getModel()
 
-    model.compile(optimizer='adam', loss=tf.losses.BinaryCrossentropy(from_logits=1), metrics=['accuracy'])
-    input_train = np.array([p[0] for p in data.trainingSet]).reshape(-1, 100, 100, 1)
+    model.compile(optimizer='adam',loss=tf.losses.BinaryCrossentropy(from_logits=1), metrics=['accuracy'])
+    input_train = np.array([p[0] for p in data.trainingSet]).reshape(-1, 287, 200, 1)
     output_train = np.asarray([p[1] for p in data.trainingSet])
 
-    input_test = np.array([p[0] for p in data.validationSet]).reshape(-1, 100, 100, 1)
+    input_test = np.array([p[0] for p in data.validationSet]).reshape(-1, 287, 200, 1)
     output_test = np.asarray([p[1] for p in data.validationSet])
 
-    history = model.fit(input_train, output_train, epochs=50, validation_data=(input_test, output_test))
+    history = model.fit(input_train, output_train, batch_size=len(data.trainingSet)//14, epochs=100 ,validation_data=(input_test, output_test))
     print(history.history.keys())
     # summarize history for accuracy
     plt.plot(history.history['val_loss'])
@@ -44,7 +44,7 @@ if __name__ == '__main__':
     plt.title('model loss')
     plt.ylabel('loss')
     plt.xlabel('epoch')
-    plt.legend(['train', 'test'], loc='upper left')
+    plt.legend(['test', 'train'], loc='upper left')
     plt.show()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/

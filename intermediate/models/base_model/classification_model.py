@@ -10,7 +10,7 @@ class Inception(models.Model):
 
         self.b1_1 = layers.Conv2D(c1, kernel_size=1)
         self.b2_1 = layers.Conv2D(c2[0], kernel_size=1)
-        self.b2_2 = layers.Conv2D(c2[1], kernel_size=1, padding="same")
+        self.b2_2 = layers.Conv2D(c2[1], kernel_size=3, padding="same")
         self.b3_1 = layers.Conv2D(c3[0], kernel_size=1)
         self.b3_2 = layers.Conv2D(c3[1], kernel_size=5, padding="same")
         self.b4_1 = layers.MaxPool2D(3, padding="same", strides=1)
@@ -27,7 +27,7 @@ class Inception(models.Model):
 
 class GoogLeNet():
     def __init__(self):
-        self.net = models.Sequential([layers.Input((100,100,1)), self.b1(), self.b2(), self.b3(), self.b4(), self.b5(),
+        self.net = models.Sequential([layers.Input((287, 200,1)), self.b1(), self.b2(), self.b3(), self.b4(), self.b5(),
                                      layers.Dense(1)])
 
     def getModel(self):
