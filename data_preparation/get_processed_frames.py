@@ -82,7 +82,7 @@ if __name__ == '__main__':
     processing_dict_name = 'processing_dictionary.pkl'
 
     # define output shape
-    output_shape = (256, 384)
+    output_shape = (100, 100)
 
     # define output data type for images
     output_datatype = '.png'
