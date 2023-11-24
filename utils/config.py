@@ -5,7 +5,7 @@ Configure project root path and create project subfolders if they do not exist y
 import os
 
 folders = []
-project_root = "/home/tefan/PycharmProjects/MIRPR_project" # change to project root path
+project_root = "C:/Users/Mircea/Desktop/Metode inteligente de rez a pb realea/ER_detection/ER_detection" # change to project root path
 
 if project_root == None:
     raise ValueError('First specify the project root')
@@ -46,6 +46,9 @@ folders.append(annotations_folder)
 models_folder = os.path.join(intermediate_folder, 'models')
 folders.append(models_folder)
 
+#utils folder
+utils_folder=os.path.join(project_root,'utils')
+folders.append(utils_folder)
 # define a seed number
 seed = 11
 

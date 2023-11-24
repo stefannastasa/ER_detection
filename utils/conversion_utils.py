@@ -2,12 +2,16 @@
 Utility functions for transformation of images or points from polar to Cartesian coordinates,
 as well as transformation of arrays from Cartesian to polar.
 """
-
+import os.path
 from typing import Union
 
+import cv2
 import numpy as np
+from skimage.color import rgb2gray
 from skimage.transform import resize
 from polarTransform import convertToPolarImage, convertToCartesianImage
+from PIL import Image
+from utils.config import utils_folder
 
 
 # ----------------------------  RADII & ANGLES  ----------------------------
@@ -136,7 +140,8 @@ def crop_and_resize(
         points: tuple,
         output_shape: tuple,
         order: int = 1,
-        apply_mask: bool = True
+        apply_mask: bool = True,
+        image_mode: str = 'modeA'
 ) -> tuple:
     """
     Crop the image based on the four annotated corner points indicating the region of interest,
@@ -154,7 +159,11 @@ def crop_and_resize(
         processing information
     """
     # construct a mask from the points to remove embedded writing and to find the region of interest
-    mask = cartesian2polar_image(np.ones(output_shape), points, image.shape)
+    if (image_mode == 'modeA'):
+        mask = cv2.imread(os.path.join(utils_folder,"maskModeA.jpg"))
+    else:
+        mask = cv2.imread(os.path.join(utils_folder,"maskModeB.jpg"))
+    mask = rgb2gray(mask)
 
     # get the maximum intensity for every row and every column
     mip_horizontal = np.max(mask, axis=0)
@@ -171,7 +180,6 @@ def crop_and_resize(
     else:
         roi = (image * np.ones_like(mask))[top:bottom, left:right]
     roi_shape = roi.shape
-
     # find the amount of padding needed to get the correct aspect ratio
     if (roi_shape[0] / output_shape[0]) * output_shape[1] - roi_shape[1] > 0:
         difference = np.ceil((roi_shape[0] / output_shape[0]) * output_shape[1] - roi_shape[1])

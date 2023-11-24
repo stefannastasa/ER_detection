@@ -6,8 +6,9 @@ and resized to the desired shape. Additionally, embedded text on the side is rem
 
 import os
 import sys
+from time import sleep
 
-from skimage.io import imread
+from skimage.io import imread, imshow
 
 sys.path.append('..')
 sys.path.append(os.path.join(__file__, '..', '..'))
@@ -21,19 +22,27 @@ from natsort import natsorted
 from skimage.util import img_as_ubyte
 from skimage.color import rgb2gray
 from imageio import get_reader, imwrite
+from PIL import Image
 
 from utils.config import raw_folder, images_folder, info_folder
 from utils.conversion_utils import crop_and_resize
 import numpy as np
 
+
 def process_frame(frame, points, output_dir, output_type, output_shape, apply_mask):
     frame_data = imread(frame)
     frame_data = img_as_ubyte(rgb2gray(frame_data))
-    processed_frame, processing = crop_and_resize(frame_data, points, output_shape=output_shape, apply_mask=apply_mask)
+    if (output_dir.__contains__("modeA")):
+        image_mode = 'modeA'
+    else:
+        image_mode = 'modeB'
+    processed_frame, processing = crop_and_resize(frame_data, points, output_shape=output_shape, apply_mask=apply_mask,
+                                                  image_mode=image_mode)
 
     imwrite(os.path.join(output_dir, os.path.basename(frame)), processed_frame)
 
     return processing
+
 
 def process_clip(
         clip: str,
@@ -41,8 +50,8 @@ def process_clip(
         output_dir: str,
         output_type: str,
         output_shape: tuple,
-        apply_mask: bool = True
-) -> tuple:
+        apply_mask: bool = True,
+        image_mode: str = 'modeA') -> tuple:
     """
     Load a clip and save all frames after processing as separate images of datatype out_type in the out_dir directory.
 
@@ -65,7 +74,8 @@ def process_clip(
         # create greyscale frame
         frame = img_as_ubyte(rgb2gray(frame))
         # crop the frame, add padding to get the desired aspect ratio, then resize the image
-        processed_frame, processing = crop_and_resize(frame, points, output_shape=output_shape, apply_mask=apply_mask)
+        processed_frame, processing = crop_and_resize(frame, points, output_shape=output_shape, apply_mask=apply_mask,
+                                                      image_mode=image_mode)
         # save the processed image and add the processing settings to the list
         imwrite(os.path.join(output_dir, os.path.basename(clip).replace('.mp4', f'_{str(i).zfill(3)}{output_type}')),
                 processed_frame)
@@ -82,7 +92,7 @@ if __name__ == '__main__':
     processing_dict_name = 'processing_dictionary.pkl'
 
     # define output shape
-    output_shape = (287,200)
+    output_shape = (280, 400)
 
     # define output data type for images
     output_datatype = '.png'
@@ -114,10 +124,11 @@ if __name__ == '__main__':
         # define the path to directory with all clips
         frames = os.listdir(os.path.join(input_folder, case))
         # get the corner points coordinates for each clip
-        points = [points_dict[case.replace("case_","").replace("-","_")][frame + ".npy"] for frame in frames]
+        points = [points_dict[case.replace("case_", "").replace("-", "_")][frame + ".npy"] for frame in frames]
 
         # set some inputs of the convert_clip function
-        process = lambda frame, points: process_frame(os.path.join(input_folder, case, frame), points, case_output, output_datatype, output_shape, apply_mask=False)
+        process = lambda frame, points: process_frame(os.path.join(input_folder, case, frame), points, case_output,
+                                                      output_datatype, output_shape, apply_mask=True)
 
         # handle clips using multithreading for speedup
         for i, frame in enumerate(frames):
