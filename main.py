@@ -29,7 +29,7 @@ def gpuConfig():
 if __name__ == '__main__':
     data = dataSet(75)
 
-    model_name = "with_filters"
+    model_name = "other"
 
     gpuConfig()
 
