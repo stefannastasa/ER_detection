@@ -47,18 +47,18 @@ class dataSet:
         chooseClass2 = random.sample(range(finalLength), trainLength)
 
         self.trainingSet = []
-        self.trainingSet.extend((class1[i], 1) for i in chooseClass1)
-        self.trainingSet.extend((class2[i], 0) for i in chooseClass2)
+        self.trainingSet.extend([(np.stack([class1[i]] * 3, -1), 1) for i in chooseClass1])
+        self.trainingSet.extend([(np.stack([class2[i]] * 3, -1), 0) for i in chooseClass2])
         random.shuffle(self.trainingSet)
 
         self.validationSet = []
         for i in range(finalLength):
             if i not in chooseClass1:
-                self.validationSet.append((class1[i], 1))
+                self.validationSet.append((np.stack([class1[i]] * 3, -1), 1))
 
         for i in range(finalLength):
             if i not in chooseClass2:
-                self.validationSet.append((class2[i], 0))
+                self.validationSet.append((np.stack([class2[i]] * 3, -1), 0))
 
         random.shuffle(self.validationSet)
 

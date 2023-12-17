@@ -5,7 +5,7 @@ Configure project root path and create project subfolders if they do not exist y
 import os
 
 folders = []
-project_root = "/home/tefan/PycharmProjects/MIRPR_project" # change to project root path
+project_root = "/home/tefan/Facultate/MIRPR/ER_detection" # change to project root path
 
 if project_root == None:
     raise ValueError('First specify the project root')

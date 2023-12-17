@@ -25,7 +25,7 @@ input_folder = images_folder
 output_folder = arrays_folder
 # get the dictionary with original clip shapes
 
-skipped_cases = []
+skipped_cases = ['processed_frames']
 
 # --------------------------------------------------------------------------------
 
@@ -38,6 +38,8 @@ cases = os.listdir(input_folder)
 shape_dict = 'shape_dictionary.pkl'
 frame_cases = {}
 for case in cases:
+    if case in skipped_cases:
+        continue
     output_case_folder = os.path.join(output_folder, case)
     images_array = []
     images = os.listdir(os.path.join(input_folder, case))
