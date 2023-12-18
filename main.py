@@ -30,10 +30,10 @@ if __name__ == '__main__':
     model = GoogLeNet().getModel()
 
     model.compile(optimizer='adam',loss=tf.losses.BinaryCrossentropy(from_logits=1), metrics=['accuracy'])
-    input_train = np.array([p[0] for p in data.trainingSet]).reshape(-1, 287, 200, 1)
+    input_train = np.array([p[0] for p in data.trainingSet]).reshape(-1, 400, 280, 1)
     output_train = np.asarray([p[1] for p in data.trainingSet])
 
-    input_test = np.array([p[0] for p in data.validationSet]).reshape(-1, 287, 200, 1)
+    input_test = np.array([p[0] for p in data.validationSet]).reshape(-1, 400, 280, 1)
     output_test = np.asarray([p[1] for p in data.validationSet])
 
     history = model.fit(input_train, output_train, batch_size=len(data.trainingSet)//14, epochs=100 ,validation_data=(input_test, output_test))

@@ -27,7 +27,7 @@ class Inception(models.Model):
 
 class GoogLeNet():
     def __init__(self):
-        self.net = models.Sequential([layers.Input((287, 200,1)), self.b1(), self.b2(), self.b3(), self.b4(), self.b5(),
+        self.net = models.Sequential([layers.Input((400, 280,1)), self.b1(), self.b2(), self.b3(), self.b4(), self.b5(),
                                      layers.Dense(1)])
 
     def getModel(self):
