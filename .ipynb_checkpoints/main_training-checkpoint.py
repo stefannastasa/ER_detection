@@ -88,6 +88,5 @@ if __name__ == '__main__':
                             validation_data=(input_test, output_test))
 
         model.save("./saved_model/")
-        
 
 
